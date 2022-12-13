@@ -8,6 +8,7 @@ const app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("public"));
 var items = ["buy food", "eat food", "cook food"];
+var works = [];
 
 app.set("view engine", "ejs");
 app.get("/", function (req, res) {
@@ -20,9 +21,17 @@ app.get("/", function (req, res) {
 
 app.post("/", (req, res) => {
   var item = req.body.newItem;
-  items.push(item);
-  console.log(item);
-  res.redirect("/");
+  if (req.body.list === "work") {
+    works.push(item);
+    res.redirect("/work");
+  } else {
+    items.push(item);
+
+    res.redirect("/");
+  }
 });
 
+app.get("/work", function (req, res) {
+  res.render("list", { kindofday: "work", newone: works });
+});
 app.listen(3000, () => console.log("server 3000 is up"));
